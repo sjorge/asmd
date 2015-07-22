@@ -1,8 +1,12 @@
 #!/bin/env python
 
+## added library path if not frozen
+import sys
+if not getattr(sys, "frozen", False):
+  sys.path.append(sys.path[0] + '/modules')
+
 ## import
-import os, sys
-import time
+import os, time
 
 ## ASMD
 class asmd_helper(object):
@@ -71,10 +75,12 @@ class asmd(object):
   """Advanced SmartOS Management Daemon"""
 
   def __init__(self):
-    print 'hello'
+    """Initialized asmd"""
+    asmd_helper().log("Initialized")
 
   def setup(self):
-    print 'setup'
+    core_object = getattr(__import__('asmd_modules_config'), 'asmd_modules_config')
+    (core_object()).run()
 
 ## init
 if __name__ == "__main__":
