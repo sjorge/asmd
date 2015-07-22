@@ -50,9 +50,8 @@ class asmd_service_cron(object):
     config['name'] = "cron-setup"
     config['transient'] = True
     config['description'] = "populate crontab from /usbkey/config"
-    config['dependents'] = {}
-    config['dependents']['cron'] = "svc:/system/cron:default"
     config['dependencies'] = {}
     config['dependencies']['fs-local'] = "svc:/system/filesystem/local"
+    config['dependencies']['cron'] = "svc:/system/cron:default"
    
     return config
