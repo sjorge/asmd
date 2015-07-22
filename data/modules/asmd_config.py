@@ -1,5 +1,6 @@
-from asmd_logger import log
+from asmd_helper import log
 import os, sys
+
 class asmd_config(object):
   """asmd configuration helper"""
   smf_path = "/opt/custom/smf"

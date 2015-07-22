@@ -1,5 +1,6 @@
-from asmd_logger import log
+from asmd_helper import log, symlink
 import os
+
 class asmd_service_profile(object):
   """asmd profile service :: setup /root's home"""
   profile_config_dir = "/usbkey/asmd/profile"
@@ -15,6 +16,7 @@ class asmd_service_profile(object):
   def start(self):
     log("starting ...", log_name='asmd::service::profile')
     for f in os.listdir(self.profile_config_dir):
+      o
       log(f, log_name='asmd::service::profile')
 
   def stop(self):

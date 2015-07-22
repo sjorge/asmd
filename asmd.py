@@ -8,7 +8,7 @@ if not getattr(sys, "frozen", False):
   sys.path.append(os.path.join(os.path.dirname(sys.argv[0]), 'modules'))
 else:
   sys.path.append(os.path.normpath(os.path.join(os.path.dirname(sys.argv[0]), '..', '..', 'modules')))
-from asmd_logger import log
+from asmd_helper import log
 
 ## ASMD
 class asmd(object):

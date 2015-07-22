@@ -1,7 +1,7 @@
-import sys, time
+import sys, time, os, errno
 
 class log(object):
-  """module with helper functions"""
+  """logging module"""
 
   def __init__(self, msg, color='', error=False, raw=False, log_name='asmd'):
     """colorful logging function"""
@@ -60,3 +60,19 @@ class log(object):
         )
       )
     log.flush()
+
+class symlink(object):
+  """symlink module"""
+
+  def __init__(self, src, dst, force=False):
+    """symlink supporting force"""
+    try:
+        os.symlink(file1, file2)
+    except OSError, e:
+        if e.errno == errno.EEXIST and force:
+            os.remove(file2)
+            os.symlink(file1, file2)
+            return True
+        return False
+    finally:
+      return True
