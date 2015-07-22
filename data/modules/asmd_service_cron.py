@@ -1,4 +1,5 @@
 from asmd_helper import log, smartos_config
+from subprocess import Popen, PIPE
 import os
 
 class asmd_service_cron(object):
@@ -33,6 +34,13 @@ class asmd_service_cron(object):
       with open(self.crontab, 'a') as crontab:
         crontab.write("%s # asmd-cron-entry\n" % config[entry].strip())
 
+    log("signaling cron daemon to reload ...", log_name='asmd::service::cron')
+    pgrep_proc = Popen(['/usr/bin/pgrep', 'cron'], stdout=PIPE)
+    cron_pid = pgrep_proc.communicate()[0].strip()
+    pgrep_proc.wait()
+    kill_proc = Popen(['/usr/bin/kill', '-THAW', cron_pid])
+    kill_proc.wait()
+
   def stop(self):
     """daemon stop"""
     pass # not required for transient service
@@ -44,5 +52,7 @@ class asmd_service_cron(object):
     config['description'] = "populate crontab from /usbkey/config"
     config['dependents'] = {}
     config['dependents']['cron'] = "svc:/system/cron:default"
+    config['dependencies'] = {}
+    config['dependencies']['fs-local'] = "svc:/system/filesystem/local"
    
     return config
