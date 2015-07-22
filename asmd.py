@@ -16,7 +16,7 @@ class asmd(object):
 
   def __init__(self):
     """Initialized asmd"""
-    log("initializing ...")
+    log("initializing ...", log_name='asmd::core')
 
   def setup(self):
     module_object = getattr(__import__('asmd_config'), 'asmd_config')
@@ -30,8 +30,7 @@ class asmd(object):
       if methode.lower() == 'stop':
         (module_object()).stop()
     except:
-      log("failed to load serivce %s!" % service)
-
+      log("failed to load serivce %s!" % service, log_name='asmd::core')
 
 ## init
 if __name__ == "__main__":
@@ -44,5 +43,5 @@ if __name__ == "__main__":
     methode = sys.argv[(1+sys.argv.index('-m'))]
     asmd().run(service, methode)
   else:
-    log('please run asmd via smf or provide -s to run setup.', error=True)
+    log('please run asmd via smf or provide -s to run setup.', error=True, log_name='asmd::loader')
     sys.exit(1)
