@@ -93,5 +93,7 @@ class smartos_config(object):
           continue
         optval = optval.strip().split("=")
         optval[0] = optval[0][len("asmd_"):]
+        if optval[1][0] == '"' and optval[1][-1] == '"':
+          optval[1] = optval[1][1:-1]
         config[optval[0]] = optval[1]
     return config
