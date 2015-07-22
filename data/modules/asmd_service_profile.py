@@ -14,7 +14,8 @@ class asmd_service_profile(object):
 
   def start(self):
     log("starting ...", log_name='asmd::service::profile')
-    # TODO: implement me
+    for f in os.listdir(self.profile_config_dir):
+      log(f, log_name='asmd::service::profile')
 
   def stop(self):
     """daemon stop"""
@@ -22,7 +23,7 @@ class asmd_service_profile(object):
 
   def smf_instance_config(self):
     config = {}
-    config['service'] = "profile-setup"
+    config['name'] = "profile-setup"
     config['transient'] = True
     config['description'] = "Setup /root's home"
     config['dependencies'] = {}

@@ -1,4 +1,4 @@
-    <instance name='{service}' enabled='true'>
+    <instance name='{name}' enabled='true'>
 {dependencies}
       <exec_method name='start' type='method' exec='{ASMD_BIN} -d {service} -m start' timeout_seconds='120'/>
       <exec_method name='stop' type='method' exec='{ASMD_BIN} -d {service} -m stop' timeout_seconds='120'/>

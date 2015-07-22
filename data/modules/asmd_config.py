@@ -40,12 +40,13 @@ class asmd_config(object):
 
         module_object = getattr(__import__(service_class), service_class)
         cfg_data = (module_object()).smf_instance_config()
-        if 'service' not in cfg_data:
-          cfg_data['service'] = service_name
+        if 'name' not in cfg_data:
+          cfg_data['name'] = service_name
+        cfg_data['service'] = service_name
         smf_instances.append(cfg_data)
    
       smf_instance_data = []
-      for cfg in smf_instances: # [{'transient': True, 'description': "Setup /root's home", 'dependencies': {'fs-local': 'svc:/system/filesystem/local'}}]
+      for cfg in smf_instances:
         xml = smf_instance_transient_xml if cfg['transient'] else smf_instance_daemon_xml
         service_deps = []
         for name in cfg['dependencies']:
@@ -54,6 +55,7 @@ class asmd_config(object):
           
         smf_instance_data.append(xml.format(
           description=cfg['description'],
+          name=cfg['name'], 
           service=cfg['service'], 
           dependencies="\n".join(service_deps),
           ASMD_BIN=sys.argv[0]
