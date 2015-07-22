@@ -14,6 +14,7 @@ rm dist/*.gz
 mkdir -p dist/asmd/bin
 unzip dist/asmd-*.zip -d dist/asmd/bin
 rm dist/*.zip
-cp -r data/share/ dist/asmd/
+cp -r data/* dist/asmd/
+find dist/asmd/modules -type f -name "*.pyc" -exec rm {} \+
 tar czvf dist/asmd-$(grep version setup.py | awk -F'"' '{ print $2 }').tar.gz -C dist/ asmd/
 rm -rf dist/asmd/
