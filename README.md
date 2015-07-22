@@ -4,9 +4,9 @@ asmd aims to replace a few bash glue services
 
 The following will be implemented:
 
-* admin tag over vnic :: support for the admin tag to be over a vnic
-* cron 
+* swap helper :: asmd_swap_zones=False (disable zones/swap), asmd_swap_extra=data/swap
 * notify helper :: setup sendmail for fowarding
+* admin tag over vnic :: support for the admin tag to be over a vnic
 
 ## profile service
 Files placed in /usblkey/asmd/profile will be symlinked in 
