@@ -40,7 +40,8 @@ class asmd_config(object):
 
         module_object = getattr(__import__(service_class), service_class)
         cfg_data = (module_object()).smf_instance_config()
-        cfg_data['service'] = service_name
+        if 'service' not in cfg_data:
+          cfg_data['service'] = service_name
         smf_instances.append(cfg_data)
    
       smf_instance_data = []
