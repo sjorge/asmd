@@ -1,5 +1,12 @@
 #!/bin/sh
-pkgin in build-essential unzip py27-pip patchelf
+#
+# Advanced SmartOS Management Daemon
+# 2015 By Jorge Schrauwen
+# ----------------------------------
+# prepare a base64-lts zone for 
+#  building asmd.
+#
+pkgin install -y build-essential unzip py27-pip patchelf
 pip install --egg esky bbfreeze
 
 OLD=$(pwd)
