@@ -76,3 +76,22 @@ class symlink(object):
         return False
     finally:
       return True
+
+class smartos_config(object):
+  """smartos config parser"""
+  config = "/usbkey/config"
+
+  def parse(self):
+    """parse smartos config"""
+    if not os.path.isfile(self.config):
+      return None
+    
+    config = {}
+    with open(self.config, 'r') as smartos_config:
+      for optval in smartos_config:
+        if not optval.startswith("asmd_"):
+          continue
+        optval = optval.strip().split("=")
+        optval[0] = optval[0][len("asmd_"):]
+        config[optval[0]] = optval[1]
+    return config
