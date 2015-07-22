@@ -62,3 +62,4 @@ class asmd_config(object):
         ))
 
       smf.write(smf_xml.format(instances="\n".join(smf_instance_data)))
+      log("done! reboot or run 'svccfg import %s' to enable." % os.path.join(self.smf_path, self.smf_file), log_name='asmd::config')
