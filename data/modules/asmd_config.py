@@ -15,13 +15,13 @@ class asmd_config(object):
 
   def run(self):
     """setup asmd"""
-    log("configuring ...")
 
+    log("initializing ...", log_name='asmd::config')
     if not os.path.isdir(self.smf_path):
-      log("creating %s ..." % self.smf_path)
+      log("creating %s ..." % self.smf_path, log_name='asmd::config')
       os.makedirs(self.smf_path, 755) 
 
-    log("creating service manifest ...")
+    log("creating service manifest ...", log_name='asmd::config')
     with open(os.path.join(self.smf_path, self.smf_file), 'w') as smf: 
       smf_xml = open(os.path.join(self.asmd_base, 'share', 'asmd_smf.xml.in')).read()
       smf_instance_transient_xml = open(os.path.join(self.asmd_base, 'share', 'asmd_smf_transient.xml.in')).read()
@@ -36,7 +36,7 @@ class asmd_config(object):
           continue
         service_class = service[:-3]
         service_name = service[len("asmd_service_"):-3]
-        log("discovered service %s." % service_name)
+        log("discovered service %s." % service_name, log_name='asmd::config')
 
         module_object = getattr(__import__(service_class), service_class)
         cfg_data = (module_object()).smf_instance_config()
