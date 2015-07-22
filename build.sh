@@ -1,4 +1,10 @@
 #!/bin/sh
+#
+# Advanced SmartOS Management Daemon
+# 2015 By Jorge Schrauwen
+# ----------------------------------
+# build an esky package
+#
 rm -rf dist/
 python setup.py sdist
 python setup.py bdist
