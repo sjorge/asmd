@@ -2,9 +2,8 @@ import sys, time
 
 class log(object):
   """module with helper functions"""
-  log_name = 'asmd'
 
-  def __init__(self, msg, color='', error=False, raw=False):
+  def __init__(self, msg, color='', error=False, raw=False, log_name='asmd'):
     """colorful logging function"""
     COLOR_DGRAY  = '\033[90m'
     COLOR_RED    = '\033[91m'
@@ -45,7 +44,7 @@ class log(object):
           time.strftime('[%Y/%m/%d %H:%M:%S]'),
           COLOR_RESET,
           COLOR_BLUE,
-          self.log_name,
+          log_name,
           COLOR_RESET,
           TEXT_COLOR,
           msg,
