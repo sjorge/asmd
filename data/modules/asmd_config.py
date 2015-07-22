@@ -28,6 +28,7 @@ class asmd_config(object):
       smf_instance_transient_xml = open(os.path.join(self.asmd_base, 'share', 'asmd_smf_transient.xml.in')).read()
       smf_instance_daemon_xml = open(os.path.join(self.asmd_base, 'share', 'asmd_smf_daemon.xml.in')).read()
       smf_instance_dependency_xml = open(os.path.join(self.asmd_base, 'share', 'asmd_smf_dependency.xml.in')).read()
+      smf_instance_dependent_xml = open(os.path.join(self.asmd_base, 'share', 'asmd_smf_dependent.xml.in')).read()
 
       smf_instances = []
       for service in os.listdir(os.path.join(self.asmd_base, 'modules')):
@@ -50,9 +51,12 @@ class asmd_config(object):
       for cfg in smf_instances:
         xml = smf_instance_transient_xml if cfg['transient'] else smf_instance_daemon_xml
         service_deps = []
-        for name in cfg['dependencies']:
-          dep_xml = smf_instance_dependency_xml
-          service_deps.append(dep_xml.format(name=name, svc=cfg['dependencies'][name]))
+        if 'dependencies' in cfg:
+          for name in cfg['dependencies']:
+            service_deps.append(smf_instance_dependency_xml.format(name=name, svc=cfg['dependencies'][name]))
+        if 'dependents' in cfg:
+          for name in cfg['dependents']:
+            service_deps.append(smf_instance_dependent_xml.format(name=name, svc=cfg['dependents'][name]))
           
         smf_instance_data.append(xml.format(
           description=cfg['description'],
