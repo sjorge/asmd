@@ -7,7 +7,7 @@ import sys, os
 if not getattr(sys, "frozen", False):
   sys.path.append(os.path.join(os.path.dirname(sys.argv[0]), 'modules'))
 else:
-  sys.path.append(os.path.join(os.path.dirname(sys.argv[0]), '..', '..', 'modules'))
+  sys.path.append(os.path.normpath(os.path.join(os.path.dirname(sys.argv[0]), '..', '..', 'modules')))
 from asmd_logger import log
 
 ## ASMD
@@ -16,11 +16,11 @@ class asmd(object):
 
   def __init__(self):
     """Initialized asmd"""
-    log("Initialized")
+    log("initializing ...")
 
   def setup(self):
-    core_object = getattr(__import__('asmd_config'), 'asmd_config')
-    (core_object()).run()
+    module_object = getattr(__import__('asmd_config'), 'asmd_config')
+    (module_object()).run()
 
 ## init
 if __name__ == "__main__":
