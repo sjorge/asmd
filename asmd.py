@@ -23,8 +23,6 @@ class asmd(object):
     (module_object()).run()
 
   def run(self, service, methode):
-    log("loading service %s ..." % service)
-
     try:
       module_object = getattr(__import__('asmd_service_%s' % service), 'asmd_service_%s' % service)
       if methode.lower() == 'start':
