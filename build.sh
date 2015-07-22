@@ -11,8 +11,10 @@ python setup.py bdist
 python setup.py bdist_esky
 rm -rf asmd.egg-info/ build/
 rm dist/*.gz
-mkdir -p dist/asmd
+mkdir -p dist/asmd/bin
 unzip dist/asmd-*.zip -d dist/asmd
 rm dist/*.zip
-tar czvf dist/asmd.tar.gz -C dist/ asmd/
+find dist/asmd/ -maxdepth 1 -type f -exec mv {} dist/asmd/bin \;
+cp -r data/share/ dist/asmd/
+tar czvf dist/asmd-$(grep version setup.py | awk -F'"' '{ print $2 }').tar.gz -C dist/ asmd/
 rm -rf dist/asmd/
