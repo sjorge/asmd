@@ -5,9 +5,11 @@ class asmd_service_shell(object):
 
   def start(self):
     log("service::shell starting ...")
+    # TODO: implement me
 
   def stop(self):
-    log("service::shell stopping ...")
+    """daemon stop"""
+    pass # not required for transient service
 
   def smf_instance_config(self):
     config = {}
