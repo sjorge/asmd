@@ -64,14 +64,14 @@ class log(object):
 class symlink(object):
   """symlink module"""
 
-  def __init__(self, src, dst, force=False):
+  def link(self, src, dst, force=False):
     """symlink supporting force"""
     try:
-        os.symlink(file1, file2)
+        os.symlink(src, dst)
     except OSError, e:
         if e.errno == errno.EEXIST and force:
-            os.remove(file2)
-            os.symlink(file1, file2)
+            os.remove(dst)
+            os.symlink(src, dst)
             return True
         return False
     finally:

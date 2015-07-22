@@ -16,12 +16,12 @@ class asmd_service_profile(object):
   def start(self):
     log("starting ...", log_name='asmd::service::profile')
     for f in os.listdir(self.profile_config_dir):
-      symlink(
+      symlink().link(
         os.path.join(self.profile_config_dir, f),
         os.path.join('/root', f),
         force=True
       )
-      log(f, log_name='asmd::service::profile')
+      log("linking %s" % os.path.join('/root', f), log_name='asmd::service::profile')
 
   def stop(self):
     """daemon stop"""
