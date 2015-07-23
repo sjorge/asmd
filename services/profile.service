@@ -11,14 +11,23 @@ ASMD_SERVICE_TYPE="transient"
 ASMD_SERVICE_DEPENDENCIES="svc:/system/filesystem/local"
 ASMD_SERVICE_DEPENDENTS=""
 
+ASMD_SERVICE_PROFILE_PATH=/usbkey/asmd/profile
+
 asmd_service_setup() {
-  asmd_core_log "service ${ASMD_SERVICE_NAME} stetup ..."
+  [ ! -d ${ASMD_SERVICE_PROFILE_PATH} ] && mkdir -p ${ASMD_SERVICE_PROFILE_PATH}
 }
 
 asmd_service_start() {
   asmd_core_log "service ${ASMD_SERVICE_NAME} starting ..."
+  for FILE in $(ls -a ${ASMD_SERVICE_PROFILE_PATH}); do
+    [ ${FILE} == "." ] && continue
+    [ ${FILE} == ".." ] && continue
+    [ -d ${ASMD_SERVICE_PROFILE_PATH}/${FILE} ] && [ -L /root/${FILE} ] && rm /root/${FILE}
+    asmd_core_log "linking /root/${FILE} ..."
+    ln -sf ${ASMD_SERVICE_PROFILE_PATH}/${FILE} /root/${FILE}
+  done
 }
 
-asmd_service_stop() {
-  asmd_core_log "service ${ASMD_SERVICE_NAME} stopping ..."
+asmd_service_stop() { 
+  asmd_core_log "nothing to stop for service ${ASMD_SERVICE_NAME}."
 }
