@@ -41,8 +41,8 @@ class asmd_service_cron(object):
     kill_proc.wait()
 
   def stop(self):
-    """daemon stop"""
-    pass # not required for transient service
+    """stop hook for cron service"""
+    log("nothing to stop.", log_name='asmd::service::cron')
 
   def smf_instance_config(self):
     config = {}

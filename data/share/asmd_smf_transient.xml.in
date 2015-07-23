@@ -1,7 +1,7 @@
     <instance name='{name}' enabled='true'>
 {dependencies}
       <exec_method name='start' type='method' exec='{ASMD_BIN} -d {service} -m start' timeout_seconds='120'/>
-      <exec_method name='stop' type='method' exec=':true' timeout_seconds='0'/>
+      <exec_method name='stop' type='method' exec='{ASMD_BIN} -d {service} -m stop' timeout_seconds='120'/>
       <property_group name='startd' type='framework'>
         <propval name='duration' type='astring' value='transient'/>
         <propval name='ignore_error' type='astring' value='core,signal'/>

@@ -15,6 +15,7 @@ class asmd_service_profile(object):
       os.makedirs(self.profile_config_dir)
 
   def start(self):
+    """start hook for profile serivce"""
     log("starting ...", log_name='asmd::service::profile')
     for f in os.listdir(self.profile_config_dir):
       # create symlink for each file under /root
@@ -24,6 +25,10 @@ class asmd_service_profile(object):
         force=True
       )
       log("linking %s" % os.path.join('/root', f), log_name='asmd::service::profile')
+
+  def stop(self):
+    """stop hook for profile service"""
+    log("nothing to stop.", log_name='asmd::service::profile')
 
   def smf_instance_config(self):
     config = {}
