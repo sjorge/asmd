@@ -1,0 +1,92 @@
+#!/usr/bin/bash
+####
+# Advanced SmartOS Management Daemon
+# 2015 By Jorge Schrauwen
+# ----------------------------------
+# asmd::service::mail
+####
+ASMD_SERVICE_NAME="smtp-notify"
+ASMD_SERVICE_DESC="configures sendmail to send mail elsewhere"
+ASMD_SERVICE_TYPE="transient"
+ASMD_SERVICE_DEPENDENCIES="svc:/system/filesystem/local"
+ASMD_SERVICE_DEPENDENTS="svc:/network/smtp:sendmail"
+
+ASMD_SERVICE_MAIL_BCKUP=/etc/mail/asmd_backup
+
+asmd_service_start() {
+  asmd_core_log "service ${ASMD_SERVICE_NAME} starting ..."
+
+  # store clean copy
+  if [ ! -d ${ASMD_SERVICE_MAIL_BCKUP} ]; then
+    mkdir -p ${ASMD_SERVICE_MAIL_BCKUP}
+    cp /etc/mail/{submit.cf,sendmail.cf,aliases,aliases.db} ${ASMD_SERVICE_MAIL_BCKUP}/
+  fi
+
+  # configure smart relay
+  if [[ ${CONFIG_asmd_mail_relay} ]]; then
+    asmd_core_log "configuring relay: ${CONFIG_asmd_mail_relay} ..."
+    SUBMIT_TEMP=$(mktemp)
+    SENDMAIL_TEMP=$(mktemp)
+    cp /etc/mail/submit.cf   ${SUBMIT_TEMP}
+    cp /etc/mail/sendmail.cf ${SENDMAIL_TEMP}
+    sed "s:^DS$:DS[${CONFIG_asmd_mail_relay}]:g" ${SUBMIT_TEMP}   > /etc/mail/submit.cf
+    sed "s:^DS$:DS[${CONFIG_asmd_mail_relay}]:g" ${SENDMAIL_TEMP} > /etc/mail/sendmail.cf
+    rm ${SUBMIT_TEMP} ${SENDMAIL_TEMP}
+  fi
+
+  # configure smart relay authentication
+  if [[ ${CONFIG_asmd_mail_auth_user} ]]; then
+    asmd_core_log "configuring relay authentication ..."
+    echo -n 'AuthInfo:'${CONFIG_asmd_mail_relay}' ' > /etc/mail/default-auth-info
+    echo -n '"U:'${CONFIG_asmd_mail_auth_user}'" ' >> /etc/mail/default-auth-info
+    echo -n '"I:'${CONFIG_asmd_mail_auth_user}'" ' >> /etc/mail/default-auth-info
+    echo    '"P:'${CONFIG_asmd_mail_auth_pass}'"'  >> /etc/mail/default-auth-info
+    echo -e 'Kauthinfo hash /etc/mail/default-auth-info'                       | tee -a /etc/mail/sendmail.cf >> /etc/mail/submit.cf
+    echo -e 'O AuthMechanisms=EXTERNAL GSSAPI DIGEST-MD5 CRAM-MD5 LOGIN PLAIN' | tee -a /etc/mail/sendmail.cf >> /etc/mail/submit.cf
+    echo -e 'Sauthinfo'                                                        | tee -a /etc/mail/sendmail.cf >> /etc/mail/submit.cf
+    echo -e 'R$*\t\t\t$: <$(authinfo AuthInfo:$&{server_name} $: ? $)>'        | tee -a /etc/mail/sendmail.cf >> /etc/mail/submit.cf
+    echo -e 'R<?>\t\t$: <$(authinfo AuthInfo:$&{server_addr} $: ? $)>'         | tee -a /etc/mail/sendmail.cf >> /etc/mail/submit.cf
+    echo -e 'R<?>\t\t$: <$(authinfo AuthInfo: $: ? $)>'                        | tee -a /etc/mail/sendmail.cf >> /etc/mail/submit.cf
+    echo -e 'R<?>\t\t$@ no               no authinfo available'                | tee -a /etc/mail/sendmail.cf >> /etc/mail/submit.cf
+    echo -e 'R<$*>\t\t$# $1'                                                   | tee -a /etc/mail/sendmail.cf >> /etc/mail/submit.cf
+    makemap hash /etc/mail/default-auth-info < /etc/mail/default-auth-info
+    chown :smmsp /etc/mail/default-auth-info.db
+  fi
+
+  # configure sender domain
+  if [[ ${CONFIG_asmd_mail_domain} ]]; then
+    asmd_core_log "configuring sender domain: ${CONFIG_asmd_mail_domain} ..."
+    SUBMIT_TEMP=$(mktemp)
+    SENDMAIL_TEMP=$(mktemp)
+    cp /etc/mail/submit.cf   ${SUBMIT_TEMP}
+    cp /etc/mail/sendmail.cf ${SENDMAIL_TEMP}
+    sed "s:#Dj.*:Dj${CONFIG_asmd_mail_domain}:g" ${SUBMIT_TEMP}   > /etc/mail/submit.cf
+    sed "s:#Dj.*:Dj${CONFIG_asmd_mail_domain}:g" ${SENDMAIL_TEMP} > /etc/mail/sendmail.cf
+    rm ${SUBMIT_TEMP} ${SENDMAIL_TEMP}
+  fi
+
+  # forward e-mail
+  if [[ ${CONFIG_asmd_mail_admin} ]]; then
+    asmd_core_log "enabling forward root -> ${CONFIG_asmd_mail_admin} ..."
+    echo "root: ${CONFIG_asmd_mail_admin}" >> /etc/mail/aliases
+    newaliases > /dev/null
+  fi
+
+}
+
+asmd_service_stop() { 
+  asmd_core_log "service ${ASMD_SERVICE_NAME} stopping ..."
+
+  # check backup, give up if absent
+  [ ! -d ${ASMD_SERVICE_MAIL_BCKUP} ] && asmd_core_log "no backup found, nothing to revert." && exit ${SMF_EXIT_OK}
+
+  # remove files
+  [ -e /etc/mail/default-auth-info ] && \
+    asmd_core_log "removing default-auth-info" && rm /etc/mail/default-auth-info
+  [ -e /etc/mail/default-auth-info.db ] && \
+    asmd_core_log "removing default-auth-info.db" && rm /etc/mail/default-auth-info.db
+  for BCK in $(ls ${ASMD_SERVICE_MAIL_BCKUP}); do
+    asmd_core_log "restoring ${BCK}"
+    cp ${ASMD_SERVICE_MAIL_BCKUP}/${BCK} /etc/mail/
+  done
+}

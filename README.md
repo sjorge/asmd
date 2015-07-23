@@ -4,7 +4,6 @@ asmd aims to replace a few bash glue services
 
 The following will be implemented:
 
-* notify helper :: setup sendmail for fowarding
 * admin tag over vnic :: support for the admin tag to be over a vnic
 
 ## profile service
@@ -35,3 +34,13 @@ asmd_cron_2="0 2 * * 1 /usr/sbin/zpool scrub zones"
 ```
 
 Note the "" around the cron lines, they ARE required!
+
+## mail service
+**/usbkey/config**
+```
+asmd_mail_admin=monitoring@example.org
+asmd_mail_relay=smtp.example.org
+#asmd_mail_domain=example.org
+#asmd_mail_auth_user=exampleuser
+#asmd_mail_auth_pass=examplepass
+```
