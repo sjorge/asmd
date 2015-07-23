@@ -7,9 +7,10 @@ The following will be implemented:
 * admin tag over vnic :: support for the admin tag to be over a vnic
 
 ## hostname service
-**/usbkey/config**
+Configures hostname and/or domain name
+### /usbkey/config example for hostname servic
 ```
-asmd_hostname=scn0
+asmd_hostname=scn0.example.org
 asmd_hostname_domain=example.org
 ```
 
