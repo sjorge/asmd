@@ -1,0 +1,3 @@
+      <dependent name='{name}' grouping='require_all' restart_on='refresh'>
+        <service_fmri value='{svc}'/>
+      </dependent>
