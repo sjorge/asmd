@@ -36,8 +36,8 @@ class asmd_config(object):
           cfg_data['name'] = service_name
         cfg_data['service'] = service_name
         smf_instances.append(cfg_data)
-      except:
-        log("failed to load %s!" % service_class, error=True, log_name='asmd::config')
+      except Exception, e:
+        log("failed to load serivce %s! %s" % (service, e), error=True, log_name='asmd::config')
  
     return smf_instances
 

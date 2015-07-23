@@ -30,7 +30,7 @@ class asmd(object):
       if methode.lower() == 'stop':
         (module_object()).stop()
     except Exception, e:
-      log("failed to load serivce %s!\n%s" % (service, e), error=True, log_name='asmd::core')
+      log("failed to load serivce %s! %s" % (service, e), error=True, log_name='asmd::core')
       sys.exit(1)
 
 ## init
