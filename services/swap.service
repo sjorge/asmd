@@ -1,0 +1,62 @@
+#!/usr/bin/bash
+####
+# Advanced SmartOS Management Daemon
+# 2015 By Jorge Schrauwen
+# ----------------------------------
+# asmd::service::swap
+####
+ASMD_SERVICE_NAME="swap-setup"
+ASMD_SERVICE_DESC="manage additional swap devices from /usbkey/config"
+ASMD_SERVICE_TYPE="transient"
+ASMD_SERVICE_DEPENDENCIES=""
+ASMD_SERVICE_DEPENDENTS="svc:/system/zones:default"
+
+asmd_service_start() {
+  asmd_core_log "service ${ASMD_SERVICE_NAME} starting ..."
+
+  # enable additional swap devices
+  for SWAPDEV in ${CONFIG_asmd_swap_additional}; do
+    # prepend if zvol
+    [ "${SWAPDEV:0:1}" != "/" ] && SWAPDEV=/dev/zvol/dsk/${SWAPDEV}
+
+    # skip if device missing
+    [ ! -e ${SWAPDEV} ] && asmd_core_log "swap device ${SWAPDEV} missing!" && continue
+
+    # add swapdevice
+    asmd_core_log "adding swap device ${SWAPDEV} ..."
+    [ $(swap -l 2> /dev/null | grep -c "${SWAPDEV}") -lt 1 ] && \
+      swap -a ${SWAPDEV}
+  done
+
+  # disable zones/swap if requested
+  case ${CONFIG_asmd_swap_zones} in
+    false|False|FALSE|no|No|NO)
+      if [ $(swap -l 2> /dev/null | grep -c "/dev/zvol/dsk/zones/swap") -gt 0 ]; then
+        asmd_core_log "removing swap device /dev/zvol/dsk/zones/swap ..."
+        swap -d /dev/zvol/dsk/zones/swap
+      fi
+    ;;
+  esac
+
+  # print summary
+  asmd_core_log "$(swap -s -h)"
+}
+
+asmd_service_stop() { 
+  asmd_core_log "service ${ASMD_SERVICE_NAME} stopping ..."
+
+  # enable zones/swap
+  asmd_core_log "adding swap device /dev/zvol/dsk/zones/swap  ..."
+  [ $(swap -l 2> /dev/null | grep -c "/dev/zvol/dsk/zones/swap") -lt 1 ] && \
+    swap -a /dev/zvol/dsk/zones/swap
+
+  # disable all other swap devices
+  for SWAPDEV in $(swap -l 2> /dev/null | awk '{print $1}' | grep -v "^swapfile$"); do
+    [ "${SWAPDEV}" == "/dev/zvol/dsk/zones/swap" ] && continue
+    asmd_core_log "removing swap device ${SWAPDEV} ..."
+    swap -d ${SWAPDEV}
+  done
+
+  # print summary
+  asmd_core_log "$(swap -s -h)"
+}

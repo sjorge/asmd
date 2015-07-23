@@ -17,11 +17,11 @@ Files placed in /usblkey/asmd/profile will be symlinked in
 ## swap
 # disable zones/swap zvol
 asmd_swap_zones=False
-# add data/swap zvol 
-asmd_swap_additional_0=data/swap
-# add /root/swapfile
-asmd_swap_additional_1=/root/swapfile
+# add additional swap devices
+asmd_swap_additional="data/swap /root/swapfile"
 ```
+
+!! **asmd_swap_additional** takes a space seperated list
 
 ## cron service
 **/usbkey/config**
