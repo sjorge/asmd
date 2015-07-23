@@ -14,7 +14,7 @@ load_sdc_sysinfo
 load_sdc_config
 
 ## asmd environment
-ASMD_BASE=$(dirname $0)/..
+ASMD_BASE=$(cd $(dirname $0)/..; pwd)
 ASMD_SERVICE_METHODE=
 ASMD_SERVICE_INSTANCE=
 
@@ -25,8 +25,12 @@ asmd_core_log() {
 
 ## asmd::core::setup
 asmd_core_setup() {
-  # for every service run asmd_service_setup
-  for service in $(ls ${ASMD_BASE}/services/*.service); do
+  # create smf xml
+  SMF_XML=$(mktemp)
+  cat ${ASMD_BASE}/share/00-asmd_smf.xml.in >> ${SMF_XML}
+
+  # for every service run asmd_service_setup + push xml fragment
+  for SERVICE in $(ls ${ASMD_BASE}/services/*.service); do
     # reset service variables
     ASMD_SERVICE_NAME=
     ASMD_SERVICE_DESC=
@@ -38,7 +42,9 @@ asmd_core_setup() {
     unset -f asmd_service_setup
 
     # source service variables
-    . ${service}
+    . ${SERVICE}
+    ASMD_SSERVICE_CLASS=$(basename "${SERVICE}")
+    ASMD_SSERVICE_CLASS=${ASMD_SSERVICE_CLASS%%.*}
 
     # run asmd_service_setup if delcared
     declare -f -F "asmd_service_setup" > /dev/null
@@ -46,7 +52,66 @@ asmd_core_setup() {
       asmd_core_log "configuring ${ASMD_SERVICE_NAME} ..."
       asmd_service_setup
     fi
+
+    # push smf instance begin
+    printf "    <instance name='%s' enabled='true'>\n" "${ASMD_SERVICE_NAME}" >> ${SMF_XML}
+
+    # push smf dependancies
+    DEPI=0
+    for DEP in ${ASMD_SERVICE_DEPENDENCIES}; do
+      let DEPI=1
+      printf "      <dependency name='%s-dependency-%d' grouping='require_all' restart_on='error' type='service'>\n" \
+         ${ASMD_SERVICE_NAME} \
+         ${DEPI} \
+         >> ${SMF_XML}
+      printf "        <service_fmri value='%s'/>\n" \
+        "${DEP}" \
+        >> ${SMF_XML}
+      printf "      </dependency>\n" \
+        >> ${SMF_XML}
+    done
+
+    DEPI=0
+    for DEP in ${ASMD_SERVICE_DEPENDENTS}; do
+      let DEPI=1
+      printf "      <dependent name='%s-dependent-%d' grouping='require_all' restart_on='refresh'>\n" \
+        "${ASMD_SERVICE_NAME}" \
+         ${DEPI} \
+         >> ${SMF_XML}
+      printf "        <service_fmri value='%s'/>\n" \
+        "${DEP}" \
+        >> ${SMF_XML}
+      printf "      </dependent>\n" \
+        >> ${SMF_XML}
+    done
+
+     # push smf instance end
+     printf "      <exec_method name='start' type='method' exec='%s/bin/asmd -i %s -m start' timeout_seconds='120'/>\n" \
+       "${ASMD_BASE}" \
+       "${ASMD_SSERVICE_CLASS}" \
+       >> ${SMF_XML}
+     printf "      <exec_method name='stop' type='method' exec='%s/bin/asmd -i %s -m stop' timeout_seconds='120'/>\n" \
+       "${ASMD_BASE}" \
+       "${ASMD_SSERVICE_CLASS}" \
+       >> ${SMF_XML}
+     printf "      <property_group name='startd' type='framework'>\n" >> ${SMF_XML}
+     case ${ASMD_SERVICE_TYPE} in
+       transient)
+         printf "        <propval name='duration' type='astring' value='transient'/>\n" >> ${SMF_XML}
+       ;;
+     esac
+     printf "        <propval name='ignore_error' type='astring' value='core,signal'/>\n" >> ${SMF_XML}
+     printf "      </property_group>\n" >> ${SMF_XML}
+     printf "      <template>\n" >> ${SMF_XML}
+     printf "        <common_name>\n" >> ${SMF_XML}
+     printf "          <loctext xml:lang='bash'>%s</loctext>\n" "${ASMD_SERVICE_DESC} ">> ${SMF_XML}
+     printf "        </common_name>\n" >> ${SMF_XML}
+     printf "      </template>\n" >> ${SMF_XML}
+     printf "    </instance>\n" >> ${SMF_XML}
+
   done
+  cat ${ASMD_BASE}/share/99-asmd_smf.xml.in >> ${SMF_XML}
+  cat ${SMF_XML}
 }
 
 ## asmd::core:::service
