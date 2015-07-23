@@ -1,0 +1,42 @@
+#!/usr/bin/bash
+####
+# Advanced SmartOS Management Daemon
+# 2015 By Jorge Schrauwen
+# ----------------------------------
+# asmd::service::core
+####
+ASMD_SERVICE_NAME="cron-setup"
+ASMD_SERVICE_DESC="populate crontab from /usbkey/config"
+ASMD_SERVICE_TYPE="transient"
+ASMD_SERVICE_DEPENDENCIES=""
+ASMD_SERVICE_DEPENDENTS="svc:/system/filesystem/local svc:/system/cron:default"
+
+ASMD_SERVICE_CRON_TAB="/var/spool/cron/crontabs/root"
+
+asmd_service_setup() {
+  # make sure the crontab exists
+  touch ${ASMD_SERVICE_CRON_TAB}
+}
+
+asmd_service_start() {
+  asmd_core_log "service ${ASMD_SERVICE_NAME} starting ..."
+
+  # remove jobs added by asmd
+  asmd_core_log "removing previously added jobs ..."
+  CRON_TEMP=$(mktemp)
+  sed '/# asmd-cron-job/d' ${ASMD_SERVICE_CRON_TAB} > ${CRON_TEMP}
+
+  # add jobs
+  for JOB in ${!CONFIG_asmd_cron_@}; do
+    asmd_core_log "adding asmd-cron-job [${JOB:17}] ..."
+    echo "$(echo ${!JOB} | sed 's/\\\*/\*/g') # asmd-cron-job [${JOB:17}]" >> ${CRON_TEMP}
+  done
+
+  # signal cron daemon to refresh
+  mv ${CRON_TEMP} ${ASMD_SERVICE_CRON_TAB}
+  pkill -THAW cron
+}
+
+asmd_service_stop() { 
+  asmd_core_log "nothing to stop for service ${ASMD_SERVICE_NAME}."
+}
