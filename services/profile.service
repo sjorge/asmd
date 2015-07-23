@@ -11,7 +11,7 @@ ASMD_SERVICE_TYPE="transient"
 ASMD_SERVICE_DEPENDENCIES="svc:/system/filesystem/local"
 ASMD_SERVICE_DEPENDENTS=""
 
-ASMD_SERVICE_PROFILE_PATH=/usbkey/asmd/profile
+ASMD_SERVICE_PROFILE_PATH=/usbkey/config.inc/profile
 
 asmd_service_setup() {
   [ ! -d ${ASMD_SERVICE_PROFILE_PATH} ] && mkdir -p ${ASMD_SERVICE_PROFILE_PATH}
