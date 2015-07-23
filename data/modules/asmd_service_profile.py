@@ -9,6 +9,7 @@ class asmd_service_profile(object):
     """pre-launch stuff for profile service"""
     log("initializing ...", log_name='asmd::service::profile')
 
+    # create config_dir if missing
     if not os.path.isdir(self.profile_config_dir):
       log("creating data directory %s ..." % self.profile_config_dir, log_name='asmd::service::profile')
       os.makedirs(self.profile_config_dir)
@@ -16,16 +17,13 @@ class asmd_service_profile(object):
   def start(self):
     log("starting ...", log_name='asmd::service::profile')
     for f in os.listdir(self.profile_config_dir):
+      # create symlink for each file under /root
       symlink().link(
         os.path.join(self.profile_config_dir, f),
         os.path.join('/root', f),
         force=True
       )
       log("linking %s" % os.path.join('/root', f), log_name='asmd::service::profile')
-
-  def stop(self):
-    """daemon stop"""
-    pass # not required for transient service
 
   def smf_instance_config(self):
     config = {}
