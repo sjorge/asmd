@@ -11,13 +11,23 @@ Configures hostname and/or domain name.
 ### /usbkey/config example for hostname service
 ```
 ## hostname
-asmd_hostname=scn0.example.org
-#asmd_hostname_domain=example.org
+asmd_hostname=scn0
+asmd_hostname_domain=example.org
 ```
 
 ## profile service
 Files placed in /usblkey/asmd/profile will be symlinked in 
  /root. E.g. a custom .bashrc and .vimrc.
+
+## ipv6 service
+Brings up IPv6 networking for the admin_nic.
+### /usbkey/config example for ipv6 service
+```
+#admin_ip6=auto
+admin_ip6=2001:0DB8:3ac1:e069:d444:e7f6:5439:01f4
+admin_netmask6=64
+admin_gateway6=2001:0DB8:3ac1:e069:d444:e7f6:5439:f511
+```
 
 ## swap service
 Configure additional swap devices, optionally remove the default one.
