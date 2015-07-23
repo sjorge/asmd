@@ -12,6 +12,7 @@ ASMD_SERVICE_DEPENDENCIES="svc:/network/physical:default"
 ASMD_SERVICE_DEPENDENTS=""
 
 . ${ASMD_BASE}/share/bash_helpers/ipv6-validate.sh
+. ${ASMD_BASE}/share/bash_helpers/update_hosts.sh
 
 asmd_service_start() {
   asmd_core_log "service ${ASMD_SERVICE_NAME} starting ..."
@@ -47,6 +48,8 @@ asmd_service_start() {
     route add -inet6 default ${CONFIG_admin_gateway6}
   fi
 
+  # update /etc/hosts
+  update_hosts
 }
 
 asmd_service_stop() { 
@@ -72,4 +75,7 @@ asmd_service_stop() {
     asmd_core_log "removing default gateway ..."
     route delete -inet6 default $(netstat -rn -f inet6 | grep default | awk '{ print $2 }')
   fi
+
+  # update /etc/hosts
+  update_hosts
 }
