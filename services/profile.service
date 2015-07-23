@@ -1,0 +1,24 @@
+#!/usr/bin/bash
+####
+# Advanced SmartOS Management Daemon
+# 2015 By Jorge Schrauwen
+# ----------------------------------
+# asmd::service::profile
+####
+ASMD_SERVICE_NAME="profile-setup"
+ASMD_SERVICE_DESC="setup root's environment"
+ASMD_SERVICE_TYPE="transient"
+ASMD_SERVICE_DEPENDENCIES="svc:/system/filesystem/local"
+ASMD_SERVICE_DEPENDENTS=""
+
+asmd_service_setup() {
+  asmd_core_log "service ${ASMD_SERVICE_NAME} stetup ..."
+}
+
+asmd_service_start() {
+  asmd_core_log "service ${ASMD_SERVICE_NAME} starting ..."
+}
+
+asmd_service_stop() {
+  asmd_core_log "service ${ASMD_SERVICE_NAME} stopping ..."
+}
