@@ -8,7 +8,7 @@
 ASMD_SERVICE_NAME="profile-setup"
 ASMD_SERVICE_DESC="setup root's environment"
 ASMD_SERVICE_TYPE="transient"
-ASMD_SERVICE_DEPENDENCIES="svc:/system/filesystem/local"
+ASMD_SERVICE_DEPENDENCIES="svc:/system/filesystem/local svc:/system/filesystem/smartdc"
 ASMD_SERVICE_DEPENDENTS=""
 
 ASMD_SERVICE_PROFILE_PATH=/usbkey/config.inc/profile
