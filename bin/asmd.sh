@@ -104,7 +104,7 @@ asmd_core_setup() {
      printf "      </property_group>\n" >> ${SMF_XML}
      printf "      <template>\n" >> ${SMF_XML}
      printf "        <common_name>\n" >> ${SMF_XML}
-     printf "          <loctext xml:lang='bash'>%s</loctext>\n" "${ASMD_SERVICE_DESC} ">> ${SMF_XML}
+     printf "          <loctext xml:lang='C'>%s</loctext>\n" "${ASMD_SERVICE_DESC} ">> ${SMF_XML}
      printf "        </common_name>\n" >> ${SMF_XML}
      printf "      </template>\n" >> ${SMF_XML}
      printf "    </instance>\n" >> ${SMF_XML}
