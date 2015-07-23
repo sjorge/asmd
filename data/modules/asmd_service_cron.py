@@ -5,10 +5,12 @@ import os, shutil
 class asmd_service_cron(object):
   """asmd cron service :: populate crontab from /usbkey/config"""
   crontab = "/var/spool/cron/crontabs/root"
+  config = None
 
   def __init__(self):
     """pre-launch stuff for cron service"""
     log("initializing ...", log_name='asmd::service::cron')
+    self.config = smartos_config().parse()
 
   def start(self):
     log("starting ...", log_name='asmd::service::cron')
@@ -25,12 +27,11 @@ class asmd_service_cron(object):
       # move work file to final
       shutil.move("%s_asmd" % self.crontab, self.crontab)
 
-    config = smartos_config().parse()
-    if 'cron' in config:
+    if 'cron' in self.config:
       with open(self.crontab, 'a') as crontab:
-        for entry in sorted(config['cron']):
+        for entry in sorted(self.config['cron']):
           log("adding crontab job [%s] ..." % entry, log_name='asmd::service::cron')
-          crontab.write("%s # asmd-cron-job [%s]\n" % (config['cron'][entry].strip(), entry))
+          crontab.write("%s # asmd-cron-job [%s]\n" % (self.config['cron'][entry].strip(), entry))
 
     # signal crond for crontab update
     log("signaling crond to relaod crontab ...", log_name='asmd::service::cron')
