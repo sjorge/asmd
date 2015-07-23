@@ -1,6 +1,6 @@
 from asmd_helper import log, smartos_config
 from subprocess import Popen, PIPE
-import os
+import os, shutil
 
 class asmd_service_cron(object):
   """asmd cron service :: populate crontab from /usbkey/config"""
@@ -13,27 +13,27 @@ class asmd_service_cron(object):
   def start(self):
     log("starting ...", log_name='asmd::service::cron')
 
-    log("clearing old crontab entries ...", log_name='asmd::service::cron')
+    # remove all cron jobs added by asmd
+    log("clearing crontab jobs ...", log_name='asmd::service::cron')
     if os.path.isfile(self.crontab):
-      crontab_new = []
-      with open(self.crontab, 'r') as crontab:
-        for line in crontab:
-          line = line.strip()
-          if '# asmd-cron-entry' in line:
-            continue
-          crontab_new.append(line)
-      with open(self.crontab, 'w') as crontab:
-        for line in crontab_new:
-          crontab.write("%s\n" % line)
+      with open("%s_asmd" % self.crontab, 'w') as crontab_new:
+        with open(self.crontab, 'r') as crontab:
+          for line in crontab:
+            if '# asmd-cron-job' in line:
+              continue # discard, once of ours
+            crontab_new.write(line)
+      # move work file to final
+      shutil.move("%s_asmd" % self.crontab, self.crontab)
 
     config = smartos_config().parse()
     if 'cron' in config:
       with open(self.crontab, 'a') as crontab:
         for entry in sorted(config['cron']):
-          log("adding crontab entry [%s] ..." % entry, log_name='asmd::service::cron')
-          crontab.write("%s # asmd-cron-entry [%s]\n" % (config['cron'][entry].strip(), entry))
+          log("adding crontab job [%s] ..." % entry, log_name='asmd::service::cron')
+          crontab.write("%s # asmd-cron-job [%s]\n" % (config['cron'][entry].strip(), entry))
 
-    log("signaling cron daemon to reload ...", log_name='asmd::service::cron')
+    # signal crond for crontab update
+    log("signaling crond to relaod crontab ...", log_name='asmd::service::cron')
     pgrep_proc = Popen(['/usr/bin/pgrep', 'cron'], stdout=PIPE)
     cron_pid = pgrep_proc.communicate()[0].strip()
     pgrep_proc.wait()
