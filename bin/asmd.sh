@@ -111,7 +111,9 @@ asmd_core_setup() {
 
   done
   cat ${ASMD_BASE}/share/99-asmd_smf.xml.in >> ${SMF_XML}
-  cat ${SMF_XML}
+  mkdir -p /opt/custom/smf/
+  mv ${SMF_XML} /opt/custom/smf/asmd.xml
+  asmd_core_log "reboot or run 'svccfg import /opt/custom/smf/asmd.xml' to start asmd."
 }
 
 ## asmd::core:::service
