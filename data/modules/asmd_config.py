@@ -6,6 +6,7 @@ class asmd_config(object):
   smf_path = "/opt/custom/smf"
   smf_file = "asmd.xml"
   asmd_base = None
+  _error = False
 
   def __init__(self):
     """initialized configuration helper"""
@@ -37,7 +38,8 @@ class asmd_config(object):
         cfg_data['service'] = service_name
         smf_instances.append(cfg_data)
       except Exception, e:
-        log("failed to load serivce %s! %s" % (service, e), error=True, log_name='asmd::config')
+        log("error in %s module: %s" % (service, e), error=True, log_name='asmd::config')
+        self._error = True
  
     return smf_instances
 
@@ -84,3 +86,4 @@ class asmd_config(object):
       # write xml fragments to file
       smf.write(smf_xml.format(instances="\n".join(smf_instance_data)))
       log("done! reboot or run 'svccfg import %s' to enable." % os.path.join(self.smf_path, self.smf_file), log_name='asmd::config')
+      sys.exit(97 if self._error else 0)

@@ -30,8 +30,8 @@ class asmd(object):
       if methode.lower() == 'stop':
         (module_object()).stop()
     except Exception, e:
-      log("failed to load serivce %s! %s" % (service, e), error=True, log_name='asmd::core')
-      sys.exit(1)
+      log("error in %s module: %s" % (service, e), error=True, log_name='asmd::core')
+      sys.exit(95)
 
 ## init
 if __name__ == "__main__":
@@ -45,4 +45,4 @@ if __name__ == "__main__":
     asmd().run(service, methode)
   else:
     log('please run asmd via smf or provide -s to run setup.', error=True, log_name='asmd::loader')
-    sys.exit(1)
+    sys.exit(99)
