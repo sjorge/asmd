@@ -1,9 +1,10 @@
 #!/bin/sh
-#
+####
 # Advanced SmartOS Management Daemon
 # 2015 By Jorge Schrauwen
 # ----------------------------------
-#
+# packaging script
+####
 VERSION=1.0.0
 [ -d dist/ ] && rm -rf dist/
 mkdir -p dist/asmd/{bin,etc}
