@@ -23,7 +23,7 @@ asmd_service_start() {
   fi
 
   # configure smart relay
-  if [[ ${CONFIG_asmd_mail_relay} ]]; then
+  if [ -z ${CONFIG_asmd_mail_relay} ]; then
     asmd_core_log "configuring relay: ${CONFIG_asmd_mail_relay} ..."
     SUBMIT_TEMP=$(mktemp)
     SENDMAIL_TEMP=$(mktemp)
@@ -35,7 +35,7 @@ asmd_service_start() {
   fi
 
   # configure smart relay authentication
-  if [[ ${CONFIG_asmd_mail_auth_user} ]]; then
+  if [ -z ${CONFIG_asmd_mail_auth_user} ]; then
     asmd_core_log "configuring relay authentication ..."
     echo -n 'AuthInfo:'${CONFIG_asmd_mail_relay}' ' > /etc/mail/default-auth-info
     echo -n '"U:'${CONFIG_asmd_mail_auth_user}'" ' >> /etc/mail/default-auth-info
@@ -54,7 +54,7 @@ asmd_service_start() {
   fi
 
   # configure sender domain
-  if [[ ${CONFIG_asmd_mail_domain} ]]; then
+  if [ -z ${CONFIG_asmd_mail_domain} ]; then
     asmd_core_log "configuring sender domain: ${CONFIG_asmd_mail_domain} ..."
     SUBMIT_TEMP=$(mktemp)
     SENDMAIL_TEMP=$(mktemp)
@@ -66,7 +66,7 @@ asmd_service_start() {
   fi
 
   # forward e-mail
-  if [[ ${CONFIG_asmd_mail_admin} ]]; then
+  if [ -z ${CONFIG_asmd_mail_admin} ]; then
     asmd_core_log "enabling forward root -> ${CONFIG_asmd_mail_admin} ..."
     echo "root: ${CONFIG_asmd_mail_admin}" >> /etc/mail/aliases
     newaliases > /dev/null
