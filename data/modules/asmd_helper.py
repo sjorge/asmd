@@ -89,11 +89,28 @@ class smartos_config(object):
     config = {}
     with open(self.config, 'r') as smartos_config:
       for optval in smartos_config:
+        # ignore non asmd options
         if not optval.startswith("asmd_"):
           continue
+
+        # split and strip asmd_
         optval = optval.strip().split("=")
-        optval[0] = optval[0][len("asmd_"):]
-        if optval[1][0] == '"' and optval[1][-1] == '"':
-          optval[1] = optval[1][1:-1]
-        config[optval[0]] = optval[1]
+        optnam = optval[0][len("asmd_"):]
+        optval = optval[1]
+
+        # remove " for strings
+        if optval[0] == '"' and optval[-1] == '"':
+          optval = optval[1:-1]
+
+        # check if dict
+        if optnam.index("_"):
+          optnam = optnam.split("_")
+          optgrp = optnam.pop(0)
+          optnam = "_".join(optnam)
+           
+          if not optgrp in config:
+            config[optgrp] = {}
+          config[optgrp][optnam] = optval
+        else:
+          config[optnam] = optval
     return config
