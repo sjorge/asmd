@@ -1,3 +1,0 @@
-      <dependency name='{name}' grouping='require_all' restart_on='error' type='service'>
-        <service_fmri value='{svc}'/>
-      </dependency>
