@@ -21,7 +21,7 @@ class asmd_config(object):
       # check we are dealing with a asmd_service_*.py file
       if not os.path.isfile(os.path.join(self.asmd_base, 'modules', service)):
         continue
-      if not service.startswith("asmd_service_") or not service.endswith(".py")::
+      if not service.startswith("asmd_service_") or not service.endswith(".py"):
         continue
 
       # extract service name
@@ -39,7 +39,7 @@ class asmd_config(object):
       except:
         log("failed to load %s!" % service_class, error=True, log_name='asmd::config')
  
-      return smf_instances
+    return smf_instances
 
   def run(self):
     """setup asmd"""
@@ -52,10 +52,10 @@ class asmd_config(object):
     with open(os.path.join(self.smf_path, self.smf_file), 'w') as smf: 
       # load xml templates
       smf_xml = open(os.path.join(self.asmd_base, 'share', 'asmd_smf.xml.in')).read()
-      smf_instance_transient_xml = open(os.path.join(self.asmd_base, 'share', 'asmd_smf_transient.xml.in')).read()
-      smf_instance_daemon_xml = open(os.path.join(self.asmd_base, 'share', 'asmd_smf_daemon.xml.in')).read()
-      smf_instance_dependency_xml = open(os.path.join(self.asmd_base, 'share', 'asmd_smf_dependency.xml.in')).read()
-      smf_instance_dependent_xml = open(os.path.join(self.asmd_base, 'share', 'asmd_smf_dependent.xml.in')).read()
+      smf_instance_transient_xml = open(os.path.join(self.asmd_base, 'share', 'asmd_smf_transient.xml.in')).read().rstrip()
+      smf_instance_daemon_xml = open(os.path.join(self.asmd_base, 'share', 'asmd_smf_daemon.xml.in')).read().rstrip()
+      smf_instance_dependency_xml = open(os.path.join(self.asmd_base, 'share', 'asmd_smf_dependency.xml.in')).read().rstrip()
+      smf_instance_dependent_xml = open(os.path.join(self.asmd_base, 'share', 'asmd_smf_dependent.xml.in')).read().rstrip()
 
       # generate instance xml fragments
       smf_instance_data = []
