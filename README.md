@@ -4,7 +4,6 @@ asmd aims to replace a few bash glue services
 
 The following will be implemented:
 
-* swap helper :: asmd_swap_zones=False (disable zones/swap), asmd_swap_extra=data/swap
 * notify helper :: setup sendmail for fowarding
 * admin tag over vnic :: support for the admin tag to be over a vnic
 
@@ -12,6 +11,17 @@ The following will be implemented:
 Files placed in /usblkey/asmd/profile will be symlinked in 
  /root. E.g. a custom .bashrc and .vimrc.
 
+## swap service
+**/usbkey/config**
+```
+## swap
+# disable zones/swap zvol
+asmd_swap_zones=False
+# add data/swap zvol 
+asmd_swap_additional_0=data/swap
+# add /root/swapfile
+asmd_swap_additional_1=/root/swapfile
+```
 
 ## cron service
 **/usbkey/config**
