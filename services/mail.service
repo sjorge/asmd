@@ -19,7 +19,7 @@ asmd_service_start() {
   # store clean copy
   if [ ! -d ${ASMD_SERVICE_MAIL_BCKUP} ]; then
     mkdir -p ${ASMD_SERVICE_MAIL_BCKUP}
-    cp /etc/mail/{submit.cf,sendmail.cf,aliases,aliases.db} ${ASMD_SERVICE_MAIL_BCKUP}/
+    cp /etc/mail/{submit.cf,sendmail.cf,aliases} ${ASMD_SERVICE_MAIL_BCKUP}/
   fi
 
   # configure smart relay
