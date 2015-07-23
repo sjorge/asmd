@@ -6,6 +6,13 @@ The following will be implemented:
 
 * admin tag over vnic :: support for the admin tag to be over a vnic
 
+## hostname service
+**/usbkey/config**
+```
+asmd_hostname=scn0
+asmd_hostname_domain=example.org
+```
+
 ## profile service
 Files placed in /usblkey/asmd/profile will be symlinked in 
  /root. E.g. a custom .bashrc and .vimrc.

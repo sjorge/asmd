@@ -1,0 +1,34 @@
+#!/usr/bin/bash
+####
+# Advanced SmartOS Management Daemon
+# 2015 By Jorge Schrauwen
+# ----------------------------------
+# asmd::service::hostname
+####
+ASMD_SERVICE_NAME="hostname"
+ASMD_SERVICE_DESC="sets nodename and defaultdomain"
+ASMD_SERVICE_TYPE="transient"
+ASMD_SERVICE_DEPENDENCIES=""
+ASMD_SERVICE_DEPENDENTS="svc:/system/identity:node"
+
+asmd_service_start() {
+  asmd_core_log "service ${ASMD_SERVICE_NAME} starting ..."
+
+  # set nodename
+  if [ ! -z ${CONFIG_asmd_hostname} ]; then
+    asmd_core_log "configuring hostname: ${CONFIG_asmd_hostname} ..."
+    hostname ${CONFIG_asmd_hostname}
+    echo "${CONFIG_asmd_hostname}" > /etc/nodename
+  fi
+
+  # set deomain name
+  if [ ! -z ${CONFIG_asmd_hostname_domain} ]; then
+    asmd_core_log "configuring domain: ${CONFIG_asmd_hostname_domain} ..."
+    echo "${CONFIG_asmd_hostname_domain}" > /etc/defaultdomain
+  fi
+
+}
+
+asmd_service_stop() { 
+  asmd_core_log "nothing to stop for service ${ASMD_SERVICE_NAME}."
+}
