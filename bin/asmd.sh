@@ -59,7 +59,7 @@ asmd_core_setup() {
     # push smf dependancies
     DEPI=0
     for DEP in ${ASMD_SERVICE_DEPENDENCIES}; do
-      let DEPI=1
+      DEPI=$((${DEPI} + 1))
       printf "      <dependency name='%s-dependency-%d' grouping='require_all' restart_on='error' type='service'>\n" \
          ${ASMD_SERVICE_NAME} \
          ${DEPI} \
@@ -73,7 +73,7 @@ asmd_core_setup() {
 
     DEPI=0
     for DEP in ${ASMD_SERVICE_DEPENDENTS}; do
-      let DEPI=1
+      DEPI=$((${DEPI} + 1))
       printf "      <dependent name='%s-dependent-%d' grouping='require_all' restart_on='refresh'>\n" \
         "${ASMD_SERVICE_NAME}" \
          ${DEPI} \
