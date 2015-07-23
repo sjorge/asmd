@@ -19,20 +19,19 @@ class asmd_service_cron(object):
       with open(self.crontab, 'r') as crontab:
         for line in crontab:
           line = line.strip()
-          if line.endswith("# asmd-cron-entry"):
+          if '# asmd-cron-entry' in line:
             continue
           crontab_new.append(line)
       with open(self.crontab, 'w') as crontab:
         for line in crontab_new:
           crontab.write("%s\n" % line)
 
-    log("adding crontab entries ...", log_name='asmd::service::cron')
     config = smartos_config().parse()
-    for entry in config:
-      if not entry.startswith("cron_"):
-        continue
+    if 'cron' in config:
       with open(self.crontab, 'a') as crontab:
-        crontab.write("%s # asmd-cron-entry\n" % config[entry].strip())
+        for entry in sorted(config['cron']):
+          log("adding crontab entry [%s] ..." % entry, log_name='asmd::service::cron')
+          crontab.write("%s # asmd-cron-entry [%s]\n" % (config['cron'][entry].strip(), entry))
 
     log("signaling cron daemon to reload ...", log_name='asmd::service::cron')
     pgrep_proc = Popen(['/usr/bin/pgrep', 'cron'], stdout=PIPE)
