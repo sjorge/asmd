@@ -13,4 +13,6 @@ cp bin/asmd-setup.sh dist/asmd/bin/asmd-setup
 find dist/asmd/bin/ -type f -exec chmod +x {} \;
 cp -r share dist/asmd/
 cp -r services dist/asmd/
-tar czvf dist/asmd-${VERSION}.tar.gz -C dist/ asmd/
+pfexec chown -R root:root dist/asmd/
+pfexec chmod +x dist/asmd/share/exmaples/exec/*
+tar czpvf dist/asmd-${VERSION}.tar.gz -C dist/ asmd/
