@@ -30,6 +30,10 @@ asmd_service_start() {
   fi
 
   # detect admin nic
+  if [ ! -e /etc/inet/ndpd.conf ]; then
+    echo "ifdefault StatefulAddrConf off" > /etc/inet/ndpd.conf
+    echo "ifdefault StatelessAddrConf off" >> /etc/inet/ndpd.conf
+  fi
   NIC=$(sysinfo -p | grep NIC_admin | awk -F"'" '{ print $2 }')
 
   # we need addrconf for both auto and static
