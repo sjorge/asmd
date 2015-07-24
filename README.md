@@ -3,7 +3,7 @@ asmd aims to replace a few bash glue services
  I have for my personal SmartOS nodes.
 
 ```
-curl http://pkg.blackdot.be/packages/asmd-1.0.0.tar.gz | gzip -d | tar xvf - -C /opt
+curl http://pkg.blackdot.be/packages/asmd-1.0.0.tar.gz | gzip -d | tar xvpf - -C /opt
 /opt/asmd/bin/asmd-setup
 ```
 
