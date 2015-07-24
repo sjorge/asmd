@@ -49,14 +49,14 @@ asmd_swap_additional="data/swap /root/swapfile"
 ## cron service
 Inserts cron jobs in the root crontab.
 ### /usbkey/config example for cron service
-!! use "" around the crontab entries
+!! use "" around the crontab entries and * needs to be escaped!
 ```
 ## crontab
 # monitor for faults
-asmd_cron_0="0 10,20 * * * /usr/sbin/fmadm faulty"
-asmd_cron_1="5 10,20 * * * /usr/sbin/zpool status -x | grep -v 'healthy'"
+asmd_cron_0="0 10,20 \* \* \* /usr/sbin/fmadm faulty"
+asmd_cron_1="5 10,20 \* \* \* /usr/sbin/zpool status -x | grep -v 'healthy'"
 # zpool scrub
-asmd_cron_2="0 2 * * 1 /usr/sbin/zpool scrub zones"
+asmd_cron_2="0 2 \* \* 1 /usr/sbin/zpool scrub zones"
 ```
 
 ## mail service
