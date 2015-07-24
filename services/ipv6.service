@@ -30,7 +30,7 @@ asmd_service_start() {
   fi
 
   # detect admin nic
-  NIC=$(sysinfo -p | grep "NIC_Names='admin'" | awk -F'_' '{ print $3 }')
+  NIC=$(sysinfo -p | grep NIC_admin | awk -F"'" '{ print $2 }')
 
   # we need addrconf for both auto and static
   asmd_core_log "creating autoconf address on ${NIC} ..."
