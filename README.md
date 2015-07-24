@@ -2,10 +2,6 @@
 asmd aims to replace a few bash glue services 
  I have for my personal SmartOS nodes.
 
-The following will be implemented:
-
-* admin tag over vnic :: support for the admin tag to be over a vnic
-
 ## hostname service
 Configures hostname and/or domain name.
 ### /usbkey/config example for hostname service
@@ -16,8 +12,11 @@ asmd_hostname_domain=example.org
 ```
 
 ## profile service
-Files placed in /usblkey/asmd/profile will be symlinked in 
+Files placed in /usbkey/config.inc/profile will be symlinked in 
  /root. E.g. a custom .bashrc and .vimrc.
+
+## exec service
+Files placed in /usbkey/config.inc/exec will be executed.
 
 ## ipv6 service
 Brings up IPv6 networking for the admin_nic.
