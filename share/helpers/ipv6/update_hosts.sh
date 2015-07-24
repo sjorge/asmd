@@ -3,7 +3,7 @@ update_hosts() {
   head -n26 /etc/hosts > ${HOST_TEMP}
   sleep 5 # give addrconf time to settle
   for IP in $(ipadm show-addr | grep -v lo0 | awk '{ print $NF }' | awk -F'/' '{ print $1 }'); do
-    [ "${IP}" == "ADDR" ] && contine 
+    [ "${IP}" == "ADDR" ] && continue
     asmd_core_log "updating /etc/hosts for ${IP} ..."
     if [ -z "$(domainname)" ]; then
       echo "${IP}\t$(hostname)" >> ${HOST_TEMP}
