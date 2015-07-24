@@ -46,6 +46,9 @@ asmd_core_setup() {
     ASMD_SSERVICE_CLASS=$(basename "${SERVICE}")
     ASMD_SSERVICE_CLASS=${ASMD_SSERVICE_CLASS%%.*}
 
+    # skip if force disabled
+    [ -e /usbkey/config.inc/.asmd_disable_${ASMD_SSERVICE_CLASS} ] && continue
+
     # run asmd_service_setup if delcared
     declare -f -F "asmd_service_setup" > /dev/null
     if [ $? -eq 0 ]; then
