@@ -11,8 +11,8 @@ ASMD_SERVICE_TYPE="transient"
 ASMD_SERVICE_DEPENDENCIES="svc:/network/physical:default"
 ASMD_SERVICE_DEPENDENTS=""
 
-. ${ASMD_BASE}/share/bash_helpers/ipv6-validate.sh
-. ${ASMD_BASE}/share/bash_helpers/update_hosts.sh
+. ${ASMD_BASE}/share/helpers/ipv6/validate.sh
+. ${ASMD_BASE}/share/helpers/ipv6/update_hosts.sh
 
 asmd_service_start() {
   asmd_core_log "service ${ASMD_SERVICE_NAME} starting ..."
