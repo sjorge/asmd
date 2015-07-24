@@ -21,12 +21,12 @@ asmd_service_start() {
   [ -z ${CONFIG_admin_ip6} ] && asmd_core_log "no admin_ip6 configure, nothing to do ..." && exit ${SMF_EXIT_OK}
   if [ "${CONFIG_admin_ip6}" != "auto" ]; then
     validate_ipv6 ${CONFIG_admin_ip6}
-    [ $? -gt 0 ] && asmd_core_log "invalid ipv6 address: ${CONFIG_admin_ip6}!" && exit ${SMF_EXIT_ERR_FATAL}  
-    [ -z ${CONFIG_admin_netmask6} ] && asmd_core_log "missing admin_netmask6!" && exit ${SMF_EXIT_ERR_FATAL} 
+    [ $? -gt 0 ] && asmd_core_log "invalid ipv6 address: ${CONFIG_admin_ip6}!" && exit ${SMF_EXIT_ERR_FATAL}
+    [ -z ${CONFIG_admin_netmask6} ] && asmd_core_log "missing admin_netmask6!" && exit ${SMF_EXIT_ERR_FATAL}
     [ ${CONFIG_admin_netmask6} -lt 48 ] && asmd_core_log "admin_netmask6 less than 48!" && exit ${SMF_EXIT_ERR_FATAL}
     [ ${CONFIG_admin_netmask6} -gt 128 ] && asmd_core_log "admin_netmask6 greater than 128!" && exit ${SMF_EXIT_ERR_FATAL}
     validate_ipv6 ${CONFIG_admin_gateway6}
-    [ $? -gt 0 ] && asmd_core_log "invalid ipv6 gateway: ${CONFIG_admin_gateway6}!" && exit ${SMF_EXIT_ERR_FATAL}  
+    [ $? -gt 0 ] && asmd_core_log "invalid ipv6 gateway: ${CONFIG_admin_gateway6}!" && exit ${SMF_EXIT_ERR_FATAL}
   fi
 
   # detect admin nic
@@ -35,7 +35,7 @@ asmd_service_start() {
   # we need addrconf for both auto and static
   asmd_core_log "creating autoconf address on ${NIC} ..."
   ipadm create-addr -t -T addrconf ${NIC}/v6auto
-  
+
   # setup static ip of required
   if [ "${CONFIG_admin_ip6}" != "auto" ]; then
     asmd_core_log "creating static address ${CONFIG_admin_ip6}/${CONFIG_admin_netmask6} on ${NIC} ..."
@@ -43,20 +43,20 @@ asmd_service_start() {
   fi
 
   # setup gateway if available
-  if [ -z ${CONFIG_admin_gateway6} ]; then
+  if [ ! -z ${CONFIG_admin_gateway6} ]; then
     asmd_core_log "adding default gateway ${CONFIG_admin_gateway6} ..."
-    route add -inet6 default ${CONFIG_admin_gateway6}
+    route add -inet6 default ${CONFIG_admin_gateway6} 2> /dev/null > /dev/null
   fi
 
   # update /etc/hosts
   update_hosts
 }
 
-asmd_service_stop() { 
+asmd_service_stop() {
   asmd_core_log "service ${ASMD_SERVICE_NAME} stopping ..."
 
   # detect admin nic
-  NIC=$(sysinfo -p | grep "NIC_Names='admin'" | awk -F'_' '{ print $3 }')
+  NIC=$(sysinfo -p | grep NIC_admin | awk -F"'" '{ print $2 }')
 
   # remove static
   if [ $(ipadm show-addr | grep -c ${NIC}/v6static) -gt 0 ]; then
@@ -71,9 +71,10 @@ asmd_service_stop() {
   fi
 
   # remove gateway
-  if [ $(netstat -rn -f inet6 | grep -c default) -gt 0 ]; then
-    asmd_core_log "removing default gateway ..."
-    route delete -inet6 default $(netstat -rn -f inet6 | grep default | awk '{ print $2 }')
+  if [ ! -z ${CONFIG_admin_gateway6} ]; then
+    validate_ipv6 ${CONFIG_admin_gateway6}
+    [ $? -eq 0 ] && asmd_core_log "removing default gateway ..." && \
+      route delete -inet6 default ${CONFIG_admin_gateway6} 2> /dev/null > /dev/null
   fi
 
   # update /etc/hosts
