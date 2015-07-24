@@ -14,5 +14,5 @@ find dist/asmd/bin/ -type f -exec chmod +x {} \;
 cp -r share dist/asmd/
 cp -r services dist/asmd/
 pfexec chown -R root:root dist/asmd/
-pfexec chmod +x dist/asmd/share/exmaples/exec/*
+pfexec chmod +x dist/asmd/share/examples/exec/*
 tar czpvf dist/asmd-${VERSION}.tar.gz -C dist/ asmd/
