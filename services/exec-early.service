@@ -1,0 +1,33 @@
+#!/usr/bin/bash
+####
+# Advanced SmartOS Management Daemon
+# 2015 By Jorge Schrauwen
+# ----------------------------------
+# asmd::service::exec-early
+####
+ASMD_SERVICE_NAME="exec-early"
+ASMD_SERVICE_DESC="execute scripts before network is up"
+ASMD_SERVICE_TYPE="transient"
+ASMD_SERVICE_DEPENDENCIES=""
+ASMD_SERVICE_DEPENDENTS="svc:/network/physical:default"
+
+ASMD_SERVICE_EXECEARLY_PATH=/usbkey/config.inc/exec-early
+
+asmd_service_setup() {
+  [ ! -d ${ASMD_SERVICE_EXECEARLY_PATH} ] && mkdir -p ${ASMD_SERVICE_EXECEARLY_PATH}
+}
+
+asmd_service_start() {
+  asmd_core_log "service ${ASMD_SERVICE_NAME} starting ..."
+  for FILE in $(ls -a ${ASMD_SERVICE_EXECEARLY_PATH}); do
+    [ ${FILE} == "." ] && continue
+    [ ${FILE} == ".." ] && continue
+    [ ! -x ${ASMD_SERVICE_EXECEARLY_PATH}/${FILE} ] && asmd_core_log "skipping ${FILE}, not executable ..." && continue
+    asmd_core_log "executing ${FILE} ..."
+    $(${ASMD_SERVICE_EXECEARLY_PATH}/${FILE})
+  done
+}
+
+asmd_service_stop() { 
+  asmd_core_log "nothing to stop for service ${ASMD_SERVICE_NAME}."
+}
