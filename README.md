@@ -2,11 +2,13 @@
 asmd aims to replace a few bash glue services 
  I have for my personal SmartOS nodes.
 
+## how to install
 ```
-curl http://pkg.blackdot.be/packages/extra/asmd-1.0.0.tar.gz | gzip -d | tar xvpf - -C /opt
+curl http://pkg.blackdot.be/extras/asmd-1.0.0.tar.gz | gzip -d | tar xvpf - -C /opt
 /opt/asmd/bin/asmd-setup
 ```
 
+# Available services
 ## hostname service
 Configures hostname and/or domain name.
 ### /usbkey/config example for hostname service
