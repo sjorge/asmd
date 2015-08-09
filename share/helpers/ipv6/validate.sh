@@ -13,7 +13,7 @@
 # Wrapped in function for ASMD
 
 validate_ipv6() {
-  INPUT=$1
+  INPUT="$(tr 'A-F' 'a-f' <<< "$@")"
 
   # fill all words with zeroes
   INPUT="$( sed  's|:\([0-9a-f]\{3\}\):|:0\1:|g' <<< "$INPUT" )"
