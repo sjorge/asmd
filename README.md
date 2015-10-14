@@ -26,14 +26,7 @@ Files placed in /usbkey/config.inc/profile will be symlinked in
 Files placed in /usbkey/config.inc/exec will be executed.
 
 ## ipv6 service
-Brings up IPv6 networking for the admin_nic.
-### /usbkey/config example for ipv6 service
-```
-#admin_ip6=auto
-admin_ip6=2001:0DB8:3ac1:e069:d444:e7f6:5439:01f4
-admin_netmask6=64
-admin_gateway6=2001:0DB8:3ac1:e069:d444:e7f6:5439:f511
-```
+**admin_ip6** is now part of upstream SmartOS, leaving service in asmd for a while for legacy setups.
 
 ## swap service
 Configure additional swap devices, optionally remove the default one.
