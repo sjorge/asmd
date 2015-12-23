@@ -23,6 +23,11 @@ asmd_core_log() {
   printf "[%s] %s\n" "$(date +'%Y/%m/%d %H:%M:%S')" "$*"
 }
 
+## asmd::core::usage
+asmd_core_usage() {
+  printf "Please run asmd via the smf service, if it is missing please run $0 --setup\n"
+}
+
 ## asmd::core::setup
 asmd_core_setup() {
   # create smf xml
