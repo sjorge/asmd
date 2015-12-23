@@ -4,7 +4,7 @@ asmd aims to replace a few bash glue services
 
 ## how to install
 ```
-curl http://pkg.blackdot.be/extras/asmd-1.0.0.tar.gz | gzip -d | tar xvpf - -C /opt
+curl http://pkg.blackdot.be/extras/asmd-1.0.1.tar.gz | gzip -d | tar xvpf - -C /opt
 /opt/asmd/bin/asmd-setup
 ```
 
